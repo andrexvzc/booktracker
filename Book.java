@@ -3,12 +3,14 @@ import java.io.Serializable;
 public class Book implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    private int ID;
+
     private String title;
     private String author;
     private int year;
     private int pages;
     private double price;
+    private boolean haveRead;
+    public boolean reviewExists;
 
     public Book(String title, String author, int year, int pages, double price) {
         this.title = title;
@@ -16,8 +18,22 @@ public class Book implements Serializable {
         this.year = year;
         this.pages = pages;
         this.price = price;
+        this.haveRead = false;
+        this.reviewExists = false;
     }
 
+    public void setHaveRead(boolean haveRead) {
+        this.haveRead = haveRead;
+    }
+
+    public void setReviewExists() {
+        this.reviewExists = true;
+    }
+
+
+    public Book getBook() {
+        return this;
+    }
     public String getTitle() {
         return title;
     }
@@ -36,6 +52,10 @@ public class Book implements Serializable {
 
     public double getPrice() {
         return price;
+    }
+
+    public boolean getHaveRead() {
+        return haveRead;
     }
 
     @Override

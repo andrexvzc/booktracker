@@ -1,4 +1,5 @@
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.util.Date;
 
 public class Review implements Serializable {
@@ -7,13 +8,14 @@ public class Review implements Serializable {
     private Book book;
     private Integer rating;
     private String comment;
-    private Date date;
+    private LocalDate date;
 
-    public Review(Book book, Integer rating, String comment, Date date) {
+    public Review(Book book, Integer rating, String comment, LocalDate date) {
         this.book = book;
         this.rating = rating;
         this.comment = comment;
         this.date = date;
+        book.setReviewExists();
     }
 
     public Book getBook() {
@@ -28,7 +30,7 @@ public class Review implements Serializable {
         return comment;
     }
 
-    public Date getDate() {
+    public LocalDate getDate() {
         return date;
     }
 
