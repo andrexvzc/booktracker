@@ -3,7 +3,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class BookRepository {
-    private List<Book> books;
+    private static List<Book> books;
     private static final String FILE_NAME = "books.ser";
 
     public BookRepository() {
@@ -17,6 +17,8 @@ public class BookRepository {
     }
 
     public void removeBook(Book book) {
+        book.removeReview();
+
         books.remove(book);
         saveBooks();
     }
@@ -35,7 +37,7 @@ public class BookRepository {
         }
     }
 
-    private void saveBooks() {
+    public static void saveBooks() {
         try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(FILE_NAME))) {
             oos.writeObject(books);
         } catch (IOException e) {

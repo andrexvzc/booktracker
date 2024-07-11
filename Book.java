@@ -1,6 +1,7 @@
 import java.io.Serializable;
+import java.time.LocalDate;
 
-public class Book implements Serializable {
+public class  Book implements Serializable {
     private static final long serialVersionUID = 1L;
 
 
@@ -8,28 +9,45 @@ public class Book implements Serializable {
     private String author;
     private int year;
     private int pages;
-    private double price;
     private boolean haveRead;
     public boolean reviewExists;
+    private Review review;
 
-    public Book(String title, String author, int year, int pages, double price) {
+    public Book(String title, String author, int year, int pages) {
         this.title = title;
         this.author = author;
         this.year = year;
         this.pages = pages;
-        this.price = price;
         this.haveRead = false;
         this.reviewExists = false;
     }
 
-    public void setHaveRead(boolean haveRead) {
-        this.haveRead = haveRead;
+    public void addReview(Book book, Integer rating, String comment) {
+        this.review = new Review(book, rating, comment);
+        setReviewExists();
+        setHaveRead();
+
+    }
+    public void getReview() {
+        System.out.println(this.review);
+    }
+
+    public void setHaveRead() {
+        this.haveRead = true;
+    }
+
+    public void setHaveNotRead() {
+        this.haveRead = false;
     }
 
     public void setReviewExists() {
         this.reviewExists = true;
     }
 
+    public void removeReview() {
+        this.review = null;
+        this.reviewExists = false;
+    }
 
     public Book getBook() {
         return this;
@@ -50,9 +68,6 @@ public class Book implements Serializable {
         return pages;
     }
 
-    public double getPrice() {
-        return price;
-    }
 
     public boolean getHaveRead() {
         return haveRead;
@@ -60,6 +75,6 @@ public class Book implements Serializable {
 
     @Override
     public String toString() {
-        return title + " by " + author + " (" + year + "), " + pages + " pages, $" + price;
+        return title + " by " + author + " (" + year + "), " + pages + " pages";
     }
 }

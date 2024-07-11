@@ -8,7 +8,7 @@ public class Main {
         List<Book> books = bookRepository.getBooks();
         Interface interface1 = new Interface(books, bookRepository);
         interface1.MainMenu();
-
+        BookRepository.saveBooks();
 
     }
 }

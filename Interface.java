@@ -5,6 +5,7 @@ import java.util.Scanner;
 public class Interface {
     private BookRepository bookRepository;
     private List<Book> books;
+    private Scanner scanner = new Scanner(System.in);
 
     public Interface(List<Book> books, BookRepository bookRepository) {
         this.books = books;
@@ -16,66 +17,79 @@ public class Interface {
     public void MainMenu () {
         System.out.println("1. Select a book");
         System.out.println("2. Add a book");
-        System.out.println("3. Add a review");
-        System.out.println("4. Exit");
-        Scanner option = new Scanner(System.in);
-        int mainChoice = option.nextInt();
+        System.out.println("0. Exit");
+        int mainChoice = scanner.nextInt();
+        scanner.nextLine();
         switch (mainChoice) {
             case 1:
-                System.out.println("1. Select a book");
                 listAllBooks();
                 break;
             case 2:
-                System.out.println("2. Add a book");
+                System.out.println("ADD A BOOK");
+                addBookMenu();
                 break;
-            case 3:
-                System.out.println("3. Add a review");
-                break;
-            case 4:
-                System.out.println("4. Exit");
+            case 0:
+                System.out.println("EXITING");
                 break;
         }
     }
     public void BookMenu (Book book) {
         if(book.getHaveRead()) {
-            System.out.println("1. Unmark's as read'");
+            System.out.println("1. Unmark as read");
         } else {
             System.out.println("1. Mark as read");
         }
         System.out.println("2. Remove book");
         if (book.reviewExists) {
-            System.out.println("3.Delete review");
+            System.out.println("3. Delete review");
         } else {
             System.out.println("3. Add a review");
         }
-        System.out.println(book.reviewExists);
-        System.out.println("4. Back");
-        Scanner option = new Scanner(System.in);
-        int bookMenuChoice = option.nextInt();
+        if (book.reviewExists) {
+            System.out.println("4. See review");
+        }
+        System.out.println("0. Back");
+        int bookMenuChoice = scanner.nextInt();
+        scanner.nextLine();
         switch (bookMenuChoice) {
             case 1:
                 if(book.getHaveRead()) {
-                    System.out.println("1. Mark as unread");
+                    book.setHaveNotRead();
                 } else {
-                    System.out.println("1. Mark as read");
+                    book.setHaveRead();
                 }
+                BookMenu(book);
                 break;
             case 2:
-                System.out.println("2. Remove book");
+                deleteBook(book);
                 break;
             case 3:
                 if (book.reviewExists) {
-                    System.out.println("3.Delete review");
+                    book.removeReview();
+                    System.out.println("Review deleted");
+
+                    BookMenu(book);
                 } else {
-                    System.out.println("3. Add a review");
-                }
+                    ReviewExistingBook(book);
+                }break;
 
-                ReviewExistingBook(book);
-                break;
             case 4:
-                System.out.println("4. Back");
+                if (book.reviewExists) {
+                    book.getReview();
+                    System.out.println("PRESS ENTER TO CONTINUE");
+                    scanner.nextLine();
+                    BookMenu(book);
+                } else {
+                    System.out.println("Invalid choice");
+                    BookMenu(book);
+                } break;
+            case 0:
+                listAllBooks();
                 break;
-
+            default:
+                System.out.println("Invalid choice");
+                BookMenu(book);
+                break;
         }
     }
 
@@ -84,46 +98,65 @@ public class Interface {
     public void ReviewExistingBook (Book book) {
         System.out.println(book);
         System.out.println("1. Rate the book");
-        Scanner rating = new Scanner(System.in);
-        int bookRating = rating.nextInt();
+        int bookRating = scanner.nextInt();
+        scanner.nextLine();
         System.out.println("2. Add a comment");
-        Scanner review = new Scanner(System.in);
-        String bookReview = rating.next();
-        LocalDate date = LocalDate.now();
-        Review newReview = new Review(book, bookRating, bookReview, date);
-        System.out.println(newReview);
-        System.out.println("3. Back");
+        String bookReview = scanner.nextLine();
+        scanner.nextLine();
+        book.addReview(book, bookRating, bookReview);
+        book.getReview();
+        System.out.println("PRESS ENTER TO CONTINUE");
+        scanner.nextLine();
+        BookRepository.saveBooks();
+        BookMenu(book);
 
     }
-    public void ReviewMenu () {
-        System.out.println("1. Rate existing book");
-        System.out.println("2. Rate new book");
-        System.out.println("3. Back");
-    }
-    public void addBookMenu (boolean wantsReview) {
+
+    public void addBookMenu () {
+
         System.out.println("Enter the title of the book:");
-        System.out.println("Enter the author of the book:");
-        System.out.println("Enter the year of the book:");
-        System.out.println("Enter the number of pages of the book:");
-        System.out.println("Enter the price of the book:");
-        if (wantsReview) {
+        String titleField = scanner.nextLine();
 
-        }
+        System.out.println("Enter the author of the book:");
+        String authorField = scanner.nextLine();
+
+        System.out.println("Enter the year of the book:");
+        int yearField = scanner.nextInt();
+        scanner.nextLine();
+
+        System.out.println("Enter the number of pages of the book:");
+        int pagesField = scanner.nextInt();
+        scanner.nextLine();
+
+        bookRepository.addBook(new Book(titleField, authorField, yearField, pagesField));
+        System.out.println("BOOK SUCCESSFULLY ADDED");
+        MainMenu();
     }
-    public void addReviewMenu () {
-        System.out.println("Enter the rating of the book:");
-        System.out.println("Enter the comment of the book:");
-    }
+
     public void listAllBooks () {
+        System.out.println("SELECT A BOOK");
         for (int i = 0; i < books.size(); i++) {
-            System.out.println(i + ". " + books.get(i));
+            System.out.println((i+1) + ". " + books.get(i));
         }
+        System.out.println("0. Back");
         selectBook();
     }
     public void selectBook () {
-        Scanner option = new Scanner(System.in);
-        int bookChoice = option.nextInt();
-        Book selectedBook = books.get(bookChoice);
-        BookMenu(selectedBook);
+        int bookChoice = scanner.nextInt();
+        scanner.nextLine();
+        if (bookChoice == 0) {
+            MainMenu();
+        } else {
+        int bookIndex = bookChoice - 1;
+        Book selectedBook = books.get(bookIndex);
+        BookMenu(selectedBook);}
     }
+
+    public void deleteBook (Book book) {
+        bookRepository.removeBook(book);
+        System.out.println("BOOK REMOVED");
+        BookRepository.saveBooks();
+        MainMenu();
+    }
+
 }

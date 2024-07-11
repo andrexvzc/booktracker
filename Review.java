@@ -10,13 +10,15 @@ public class Review implements Serializable {
     private String comment;
     private LocalDate date;
 
-    public Review(Book book, Integer rating, String comment, LocalDate date) {
+
+
+    public Review(Book book, Integer rating, String comment) {
         this.book = book;
         this.rating = rating;
         this.comment = comment;
-        this.date = date;
-        book.setReviewExists();
+        this.date = LocalDate.now();
     }
+
 
     public Book getBook() {
         return book;
@@ -36,6 +38,15 @@ public class Review implements Serializable {
 
     @Override
     public String toString() {
-        return "Review of " + book.getTitle() + " by " + book.getAuthor() + ": " + rating + " stars, " + comment + " on " + date;
+        return "+-----------------------------------------------------------------------------+\n" +
+                "|   Review of "+ book.getTitle()+"                     \n" +
+                "|      by "+book.getAuthor()+"                         \n" +
+                "+-----------------------------------------------------------------------------+\n" +
+                "| Rating     | "+this.rating+"                         \n" +
+                "+-----------------------------------------------------------------------------+\n" +
+                "| Comment    | "+this.comment+"                        \n" +
+                "+-----------------------------------------------------------------------------+\n" +
+                "| Date       | "+this.date+"                           \n" +
+                "+-----------------------------------------------------------------------------+";
     }
 }
